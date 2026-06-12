@@ -237,9 +237,10 @@ mkdir ~/openclaw-weather-tool && cd ~/openclaw-weather-tool
 cat > weather.sh << 'EOF'
 #!/usr/bin/env bash
 set -euo pipefail
-LOCATION="${1:-Milpitas,CA}"
-ENCODED=$(python3 -c "import urllib.parse,sys; print(urllib.parse.quote(sys.argv[1]))" "$LOCATION")
-GEO=$(curl -s "https://geocoding-api.open-meteo.com/v1/search?name=${ENCODED}&count=1&format=json")
+LOCATION="${1:-Milpitas}"
+CITY="${LOCATION%%,*}"          # strip ,State suffix — geocoding API needs city name only
+CITY_ENC="${CITY// /%20}"       # URL-encode spaces
+GEO=$(curl -s "https://geocoding-api.open-meteo.com/v1/search?name=${CITY_ENC}&count=1&format=json")
 LAT=$(echo $GEO | python3 -c "import sys,json; print(json.load(sys.stdin)['results'][0]['latitude'])")
 LON=$(echo $GEO | python3 -c "import sys,json; print(json.load(sys.stdin)['results'][0]['longitude'])")
 NAME=$(echo $GEO | python3 -c "import sys,json; print(json.load(sys.stdin)['results'][0]['name'])")
@@ -250,7 +251,7 @@ WIND=$(echo $W | python3 -c "import sys,json; print(json.load(sys.stdin)['curren
 echo "${NAME}: ${TEMP}°F, Humidity ${HUM}%, Wind ${WIND}mph"
 EOF
 chmod +x weather.sh
-./weather.sh "Milpitas,CA"   # test it — should print real weather, no agent needed
+./weather.sh "Milpitas"   # test it — should print real weather, no agent needed
 ```
 
 ### Step 3 — `package.json`
