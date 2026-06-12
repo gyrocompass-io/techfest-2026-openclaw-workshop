@@ -358,7 +358,7 @@ Tool (plugin code)   →  gives agent a new HAND to do it with
 Both live on your machine. Both are yours to control.
 
 ## Stay in touch
-- LinkedIn: linkedin.com/in/saurabh-yergattikar-736bab62
+- LinkedIn: [linkedin.com/in/saurabh-yergattikar-736bab62](https://www.linkedin.com/in/saurabh-yergattikar-736bab62)
 - X/Twitter: @saury3827
 - Share what you build — tag #SFTechFest #OpenClaw
 
