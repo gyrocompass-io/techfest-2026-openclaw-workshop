@@ -9,6 +9,28 @@
 2. **Node.js 22.19+** (Node 24 recommended) — check: `node --version`
 3. **An LLM API key** — Anthropic, OpenAI, or Google (onboarding will ask for it)
 
+### Don't have Node 24? Install it first:
+
+**macOS (easiest — download installer):**
+Go to **nodejs.org/en/download** → pick **v24 LTS** → download the macOS installer (.pkg) → run it.
+
+**macOS (if you have Homebrew):**
+```bash
+brew install node@24
+brew link --overwrite --force node@24
+echo 'export PATH="/opt/homebrew/opt/node@24/bin:$PATH"' >> ~/.zshrc
+source ~/.zshrc
+```
+
+**Windows:**
+Go to **nodejs.org/en/download** → pick **v24 LTS** → download the Windows installer (.msi) → run it → restart PowerShell.
+
+**Verify it worked (all platforms):**
+```bash
+node --version
+```
+✅ Should say `v24.x.x`. If it still shows an old version on Mac, close the terminal and open a fresh one.
+
 ---
 
 ## LAB 1 — Install & First Chat (~5 min)
