@@ -156,7 +156,13 @@ openclaw onboard
 
 **6. Keep DM policy = `pairing`** (default) — your bot does nothing for strangers until YOU approve them.
 
-**7. Fire it up:** DM your bot in Discord (click its name in the member list → Message) → approve the pairing prompt → then from your phone's Discord app: `/daily-brief` 🎉
+**7. Approve pairing + restart gateway:** DM your bot in Discord → it replies with a pairing code. Copy the `openclaw pairing approve discord XXXXXXXX` command from the message and run it in your terminal. Then immediately run:
+```bash
+openclaw daemon start
+```
+*(The pairing approval restarts the gateway internally — `openclaw daemon start` makes sure it comes back up. Safe to run any time.)*
+
+Then from your phone's Discord app: `/daily-brief` 🎉
 *(If Discord's slash-command menu pops up, keep typing and hit send — it goes through as a normal message.)*
 
 Telegram, WhatsApp, Slack, Signal, iMessage and ~20 other channels are supported — same pattern (token → add channel → pairing).
