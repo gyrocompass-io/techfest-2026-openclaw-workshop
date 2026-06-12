@@ -342,9 +342,13 @@ In `~/.openclaw/workspace/skills/daily-brief/SKILL.md`, change step 2 from:
 ```
 to:
 ```
-2. Use the get_weather tool with the user's city to get current weather.
+2. Get weather using the exec tool ONLY — do NOT use web search or web fetch for weather.
+   Run: `~/openclaw-weather-tool/weather.sh "Milpitas"` (replace Milpitas with user's city if known).
+   Use the raw output line directly as the weather — do not add extra details.
 ```
-Save → run `/daily-brief` → weather now comes from your tool in ~1 second instead of 25.
+Save → run `/daily-brief` → weather now comes from your tool (~1 second) instead of web search (~25 seconds).
+
+> **Why exec, not the tool name?** Plugin tools registered via `api.registerTool()` are called directly by the agent runtime — they are NOT discoverable via the agent's internal tool search. If you tell the skill to "use the get_weather tool", the agent searches for it, finds nothing, and falls back to web search. Calling via exec always works.
 
 **The mental model:**
 ```
