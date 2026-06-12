@@ -119,7 +119,7 @@ openclaw skills list
 
 **4. Run it:**
 ```bash
-openclaw agent --message "/daily-brief"
+openclaw agent --agent main --message "/daily-brief"
 ```
 …or just type `/daily-brief` in the dashboard.
 
