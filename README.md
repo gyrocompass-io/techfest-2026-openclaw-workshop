@@ -204,6 +204,141 @@ In Jan–Feb 2026, 800+ malicious skills were found on ClawHub — typosquatted 
 - Skill Workshop: governed proposal flow where your *agent* drafts skills and you review/approve
 - `openclaw update` to stay current; re-run `openclaw doctor` after upgrades
 
+---
+
+## ⚡ GOING DEEPER — Build Your First Custom Tool (Weekend Homework)
+
+**Skills vs Tools — the difference:**
+- **Skill** = a markdown file that tells the agent *what to do* using existing capabilities
+- **Tool** = a code plugin that gives the agent a *brand new capability* — a dedicated function it can call directly
+
+**The project:** replace daily-brief's slow web-search weather with a fast dedicated `get_weather` tool backed by a real weather API (free, no key needed).
+
+### Step 1 — Create the plugin folder
+```bash
+mkdir ~/openclaw-weather-tool && cd ~/openclaw-weather-tool
+```
+
+### Step 2 — Write `weather.sh` (the actual tool logic)
+```bash
+cat > weather.sh << 'EOF'
+#!/usr/bin/env bash
+set -euo pipefail
+LOCATION="${1:-Milpitas,CA}"
+ENCODED=$(python3 -c "import urllib.parse,sys; print(urllib.parse.quote(sys.argv[1]))" "$LOCATION")
+GEO=$(curl -s "https://geocoding-api.open-meteo.com/v1/search?name=${ENCODED}&count=1&format=json")
+LAT=$(echo $GEO | python3 -c "import sys,json; print(json.load(sys.stdin)['results'][0]['latitude'])")
+LON=$(echo $GEO | python3 -c "import sys,json; print(json.load(sys.stdin)['results'][0]['longitude'])")
+NAME=$(echo $GEO | python3 -c "import sys,json; print(json.load(sys.stdin)['results'][0]['name'])")
+W=$(curl -s "https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LON}&current=temperature_2m,relative_humidity_2m,wind_speed_10m&temperature_unit=fahrenheit&wind_speed_unit=mph")
+TEMP=$(echo $W | python3 -c "import sys,json; print(json.load(sys.stdin)['current']['temperature_2m'])")
+HUM=$(echo $W | python3 -c "import sys,json; print(json.load(sys.stdin)['current']['relative_humidity_2m'])")
+WIND=$(echo $W | python3 -c "import sys,json; print(json.load(sys.stdin)['current']['wind_speed_10m'])")
+echo "${NAME}: ${TEMP}°F, Humidity ${HUM}%, Wind ${WIND}mph"
+EOF
+chmod +x weather.sh
+./weather.sh "Milpitas,CA"   # test it — should print real weather, no agent needed
+```
+
+### Step 3 — `package.json`
+```json
+{
+  "name": "@local/openclaw-weather-tool",
+  "version": "1.0.0",
+  "type": "module",
+  "dependencies": {
+    "typebox": "latest",
+    "openclaw": "latest"
+  },
+  "openclaw": {
+    "extensions": ["./index.ts"],
+    "compat": {
+      "pluginApi": ">=2026.3.24-beta.2",
+      "minGatewayVersion": "2026.3.24-beta.2"
+    }
+  }
+}
+```
+
+### Step 4 — `openclaw.plugin.json` (the manifest)
+```json
+{
+  "id": "weather-tool",
+  "name": "Weather Tool",
+  "description": "Adds get_weather tool backed by weather.sh",
+  "contracts": { "tools": ["get_weather"] },
+  "activation": { "onStartup": true },
+  "configSchema": { "type": "object", "additionalProperties": false }
+}
+```
+
+### Step 5 — `index.ts` (the plugin wrapper — bridges OpenClaw ↔ your script)
+```typescript
+import { Type } from "typebox";
+import { definePluginEntry } from "openclaw/plugin-sdk/plugin-entry";
+import { execFile } from "node:child_process";
+import { promisify } from "node:util";
+import { fileURLToPath } from "node:url";
+import { dirname, join } from "node:path";
+
+const execFileAsync = promisify(execFile);
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
+export default definePluginEntry({
+  id: "weather-tool",
+  name: "Weather Tool",
+  description: "Adds get_weather tool backed by weather.sh",
+  register(api) {
+    api.registerTool({
+      name: "get_weather",
+      description: "Get current weather for a location. Returns temp, humidity, wind.",
+      parameters: Type.Object({
+        location: Type.String({ description: "City name e.g. Dublin,CA or New York" })
+      }),
+      async execute(_id, params) {
+        const scriptPath = join(__dirname, "weather.sh");
+        const { stdout, stderr } = await execFileAsync(scriptPath, [params.location], {
+          timeout: 10000
+        });
+        return { content: [{ type: "text", text: stdout.trim() || stderr.trim() }] };
+      }
+    });
+  }
+});
+```
+
+### Step 6 — Install and enable
+```bash
+npm install
+openclaw plugins install --link .
+openclaw plugins enable weather-tool
+openclaw daemon start
+```
+
+### Step 7 — Verify it's live
+```bash
+openclaw plugins inspect weather-tool --runtime --json
+```
+✅ Should show `get_weather` in the registered tools list.
+
+### Step 8 — Update your daily-brief skill
+In `~/.openclaw/workspace/skills/daily-brief/SKILL.md`, change step 2 from:
+```
+2. Use web search to find today's weather...
+```
+to:
+```
+2. Use the get_weather tool with the user's city to get current weather.
+```
+Save → run `/daily-brief` → weather now comes from your tool in ~1 second instead of 25.
+
+**The mental model:**
+```
+Skill (markdown)     →  tells agent WHAT to do
+Tool (plugin code)   →  gives agent a new HAND to do it with
+```
+Both live on your machine. Both are yours to control.
+
 ## Stay in touch
 - LinkedIn: linkedin.com/in/saurabh-yergattikar-736bab62
 - X/Twitter: @saury3827
