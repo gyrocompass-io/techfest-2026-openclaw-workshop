@@ -46,14 +46,11 @@ iwr -useb https://openclaw.ai/install.ps1 | iex
 ```
 *(Windows tip: the native Windows Hub app is the easiest desktop path; WSL2 also works.)*
 
-**Alternative:** `npm install -g openclaw@latest`
+**Alternative:** `npm install -g openclaw@latest` then `openclaw onboard --install-daemon`
 
-**Onboard (configures provider, API key, Gateway, installs the always-on daemon):**
-```bash
-openclaw onboard --install-daemon
-```
+*(The curl/iwr installer runs the full wizard automatically — provider, API key, gateway, daemon, all in one shot. When it finishes it drops you into a terminal chat. Your agent says "Wake up, my friend!" — say hi back, then open the dashboard below.)*
 
-**Chat immediately — no channel setup needed:**
+**Open the browser dashboard:**
 ```bash
 openclaw dashboard
 ```
