@@ -1,6 +1,12 @@
 # Build Your Own AI Agent with OpenClaw 🦞
-### TechFest 2026 · Hands-On Workshop · Saurabh Yergattikar
-*Keep this — every command from the workshop is here, plus the safety checklist.*
+### TechFest 2026 · Agent Engineering Workshop · Saurabh Yergattikar
+*Keep this — every command from the workshop is here, plus the safety checklist and going-deeper guide.*
+
+> **Chatbot = replies. Agent = decides + uses tools + takes action.**
+> This is not a prompt engineering workshop. This is a hands-on agent engineering workshop.
+
+**Starter kit repo (fork this tonight):** https://github.com/gyrocompass-io/openclaw-first-agent
+*(skills/, tools/weather.sh, examples/prompts.md, safety checklist — everything to keep building)*
 
 ---
 
@@ -198,10 +204,17 @@ In Jan–Feb 2026, 800+ malicious skills were found on ClawHub — typosquatted 
 
 ---
 
+## Your 5 takeaways from tonight
+1. ✅ I understand what an AI agent is — decides, uses tools, takes action
+2. ✅ I installed and ran OpenClaw on my own machine
+3. ✅ I built my first skill — in a text file, in English
+4. ✅ I connected my agent to a real channel (Discord)
+5. ✅ I know how to run it safely
+
 ## Where to go next
-- Docs: **docs.openclaw.ai** (Getting Started → Skills → Security)
-- ClawHub for community skills (use the checklist!)
-- Skill Workshop: governed proposal flow where your *agent* drafts skills and you review/approve
+- **Starter kit repo:** https://github.com/gyrocompass-io/openclaw-first-agent — fork it, keep building
+- **Docs:** docs.openclaw.ai (Getting Started → Skills → Tools → Security)
+- **ClawHub** for community skills (use the checklist above!)
 - `openclaw update` to stay current; re-run `openclaw doctor` after upgrades
 
 ---
