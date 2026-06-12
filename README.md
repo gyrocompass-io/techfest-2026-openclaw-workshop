@@ -362,7 +362,7 @@ Both live on your machine. Both are yours to control.
 - X/Twitter: @saury3827
 - Share what you build — tag #SFTechFest #OpenClaw
 
-*— Saurabh Yergattikar · AI agent security researcher · eBay MTS-2 · ACL & IEEE published*
+*— Saurabh Yergattikar · AI agent infrstructure researcher · eBay MTS-2 · ACL & IEEE published*
 
 ---
 
